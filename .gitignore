@@ -10,7 +10,7 @@ build/
 classes/
 webapps/
 out/
-
+gradle/
 !doc/
 !client/
 !base/
