@@ -1,0 +1,3 @@
+rootProject.name = 'fisco-pressur-test'
+/*include ':base'
+project( ':base' ).projectDir = new File( settingsDir, '../base' )*/

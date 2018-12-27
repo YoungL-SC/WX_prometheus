@@ -1,0 +1,21 @@
+ case "SystemProxy":
+  {   switch(func){
+
+      case "setRoute":{
+        var func = "setRoute(string,address,bool)";
+        var params = [options[4],options[5],false];
+        var receipt = web3sync.sendRawTransaction(config.account,config.privKey,SystemProxy.address,func,params);
+        break;
+      }
+
+      default:{
+      console.log("-----------------SystemProxy route----------------------")
+      var routelength=SystemProxy.getRouteSize();
+      for( var i=0;i<routelength;i++){
+        var key=SystemProxy.getRouteNameByIndex(i).toString();
+        var route=SystemProxy.getRoute(key);
+        console.log(i+" )"+ key+"=>"+route[0].toString()+","+route[1].toString()+","+route[2].toString());
+      }
+  }
+    break;
+  }

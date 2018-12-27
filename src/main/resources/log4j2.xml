@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="debug">
+    <properties>
+        <Property name="LOG_PATH">/tmp/bcos_test/middle</Property>
+        <property name="APPDIR" value="log"/>
+        <property name="APPNAME" value="middle"/>
+    </properties>
+    <appenders>
+        <console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d][%t][%p][%l] %m%n" />
+        </console>
+
+        <RollingFile name="RollingFileError" fileName="${LOG_PATH}/${APPDIR}/rhine_error.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/error/log-error-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L] %m%n" />
+            <Policies>
+               
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+               
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileWarn" fileName="${LOG_PATH}/${APPDIR}/rhine_warn.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/warn/log-warn-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L] %m%n" />
+            <Policies>
+                
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileInfo" fileName="${LOG_PATH}/${APPDIR}/rhine_info.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/info/log-info-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L] %m%n" />
+            <Policies>
+               
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+               
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+           
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <RollingFile name="RollingFileDebug" fileName="${LOG_PATH}/${APPDIR}/rhine_debug.log"
+                     filePattern="${LOG_PATH}/${APPDIR}/debug/log-debug-%d{yyyy-MM-dd}.%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="[%d][%t][%p][%c:%L] %m%n" />
+            <Policies>
+                
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            
+            <DefaultRolloverStrategy compressionLevel="0" max="10"/>
+        </RollingFile>
+
+        <Async name="Async">
+            <appender-ref ref="RollingFileInfo" />
+            <appender-ref ref="RollingFileWarn" />
+            <appender-ref ref="RollingFileError" />
+            <appender-ref ref="RollingFileDebug" />
+        </Async>
+    </appenders>
+
+    <loggers>
+        <root level="info">
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="Async" />
+        </root>
+    </loggers>
+
+</configuration>
