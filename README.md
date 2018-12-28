@@ -1,17 +1,17 @@
-Before BCOS testing,some necessary steps are required.
+Before doing BCOS test, some necessary steps are required.
 
-## step 0. Deploy the BCOS and smart contract on it.
-I will provide the smart contract named "JsonData.sol"(in the path "src/main/resources/JsonData.sol") that I used before.Deploying it is the first step when you try to test BCOS.
+## Step 0. Deploy the smart contract on BCOS.
+We will provide the smart contract named "JsonData.sol"(in the path "src/main/resources/JsonData.sol") that We used before.Deploying  is the first step when you try to test BCOS.
 
-### The following steps may be required.
+### The steps are as following:
 
-1. Deploy contract on chain.For example,on bcos-test-a-01:
+1. Deploy contract on chain. For example,on bcos-test-a-01:
 ```
 cp JsonData.sol /home/ubuntu/10.0.0.99_agent_0_genesis/build/tool
 cd /home/ubuntu/10.0.0.99_agent_0_genesis/build/tool
 babel-node deploy.js JsonData
 ```
-Successful deployments will have output like this:
+The successful deployments will have output like this:
 ```
 deploy.js  ........................Start........................
 Soc File :JsonData
@@ -20,16 +20,16 @@ send transaction success: 0x06251b6023baab6f1fda82e4016182cec3f31c5ba95a3632fa9e
 JsonDatacontract address 0xc6fc72f0fe6ebf9881a2103f2829d0e98d020062
 JsonData deploy success!
 ```
-And the output "JsonDatacontract address 0xc6fc72f0fe6ebf9881a2103f2829d0e98d020062" will be used by the next step.
+The output "JsonDatacontract address 0xc6fc72f0fe6ebf9881a2103f2829d0e98d020062" will be used by the next step.
 
-2. update smart contract.
+2. Update smart contract.
 
 ```
 cd /home/ubuntu/10.0.0.99_agent_0_genesis/build/tool
 babel-node cns_manager.js update JsonData
 ```
 
-3. check  line 108 of the file 'tool.js',if the code is different from the following,you need to replace the block of code ``case "SystemProxy"``.
+3. Check  line 108 of the file 'tool.js', if the code is different from the following, you need to replace the block of code ``case "SystemProxy"``.
 
 ```
 cd /home/ubuntu/10.0.0.99_agent_0_genesis/build/systemcontract
@@ -39,7 +39,7 @@ The code that works:
 ```js 
   case "SystemProxy":
   {   switch(func){
-  
+      // The following single case is the section we added for testing
       case "setRoute":{
         var func = "setRoute(string,address,bool)";
         var params = [options[4],options[5],false];
@@ -108,12 +108,12 @@ SystemProxy address 0xc77237cbab817cc3cdec01eb2c7ef8f4382fb268
 7 )FileServerManager=>0x47cb23b922b0c830d965b8aa0beca296df28f584,false,20
 8 )JsonData=>0xc6fc72f0fe6ebf9881a2103f2829d0e98d020062,false,7
 ```
-"JsonData" appears.
+"JsonData" appears on route (8).
 
 
 Also I have convert both of them to java files and put it at the path "./middle/src/main/java/com/wxbc/bcos/web3j/JsonData.java", 
-they can be used  directly.
-At this step ,you are supposed to have got the following terms which will be used in the next step.
+which can be used  directly.
+At this step ,you should alreay have the following terms which will be used in the next step.
 
     1.system proxy contract address
     2.account
@@ -121,13 +121,13 @@ At this step ,you are supposed to have got the following terms which will be use
     4.hostIps and ports of all nodes
     5.ca.crt
     6.client.keystore
-"ca.crt" and "client.keystore" is in this path "/home/ubuntu/10.0.0.99_agent_0_genesis/build/web3sdk/conf".
+"ca.crt" and "client.keystore" are in this path "/home/ubuntu/10.0.0.99_agent_0_genesis/build/web3sdk/conf".
 ```
 cd /home/ubuntu/10.0.0.99_agent_0_genesis/build/web3sdk/conf
 ls ca.crt client.keystore
 ```
     
-## step 1. Modify Configurations
+## Step 1. Modify Configurations
 
 If you want to run this project to test BCOS, you need to modify these configurations before your testing.
 
@@ -137,7 +137,7 @@ Change "repo_path" to your own server address because I used my company's privat
 
 2. Open file ./middle/src/resources/application.properties
 
-Change these configurations to your own:
+Change these configurations according to the actural AWS environment
 ```properties
 
 ########  need to modify start ########
@@ -154,11 +154,11 @@ web3j.privKey=bcec428d5205abe0f0cc8a734083908d9eb8563e31f943d760786edf42ad67dd
 
 ```
 
-These configurations are setted for blockchain's connections;
+These configurations are set for blockchain's connections;
 
 3. Open file ./middle/src/main/java/com/wxbc/middle/utils/CommonConst.java
 
-change these configurations to your own
+change these configurations to the AWS environment as well
 
 ```java
 
@@ -172,20 +172,19 @@ change these configurations to your own
     //needs modification end
 ```
 
-These configurations are set for bcos node's accessing permisson.
+These configurations are set for BCOS node's accessing permisson.
 
 ## Step 2. Run the project
-You  can run file com.wxbc.Application to  start the project, or if the project has been packaged as
-a jar package,the command 'java -jar middle.jar' can also make it running.
+Run file com.wxbc.Application to  start the project, if the project has been packaged as
+a jar package, the command 'java -jar xxx.jar' can also make it running.
 
-## Step 3. Call Interface
+## Step 3. Call interface
 
 All the interfaces are written in a file named "TestController.java".
 You can call the following interface when the project is running.
 
 1.  ${ip:port}/rest/setJsonData/{size}/{threads}
-The parameter "size" represents the total number of request(or transaction),the parameter "threads" represents the number of threads working
-at the same time.
+The parameter "size" represents the total number of request(or transaction),the parameter "threads" represents the number of threads working at the same time.
 This interface will call the smart contract which has been deployed on the blockchain named "JsonData".
 For example:
 ```
@@ -196,9 +195,11 @@ Successful request will have output like this:
 {"returnCode":1000,"returnDesc":"Create/Insert Success","items":null}
 ```
 
-Tips:
+Remark:
 
-The response of the chain is asynchronous so you can receive it about 1 second later, and the first response will 
-be printed in the console. And one line of logs are printed for each one thousand responses. When the last one is 
-printed, you can calculate the TPS with the total number of items and the total time cost.
-You can visit the class "com.wxbc.bcos.callback.SetDataTransctionSucCallback" to check how it works.
+The response of the chain is asynchronous so you will receive it about 1 second later, and the first response will be printed in the console. Every one thousand responses will print one line of log. When the last one is printed, you can calculate the TPS with the total number of items and the total time cost. Or you can visit the class "com.wxbc.bcos.callback.SetDataTransctionSucCallback" to check how the result is calculated.
+
+Here are some sample outputs:
+```
+[2018-12-27 11:21:17,694][nioEventLoopGroup-2-4][INFO][com.wxbc.bcos.callback.SetDataTransctionSucCallback.onResponse(SetDataTransctionSucCallback.java:46)] i = 1000 ;cost(ms) : 1412, tps :708.2152974504249
+```
